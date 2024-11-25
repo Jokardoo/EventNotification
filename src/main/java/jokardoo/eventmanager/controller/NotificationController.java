@@ -1,8 +1,12 @@
 package jokardoo.eventmanager.controller;
 
+import jokardoo.eventmanager.domain.notification.Notification;
 import jokardoo.eventmanager.domain.notification.userNotification.UserNotification;
+import jokardoo.eventmanager.dto.NotificationDto;
 import jokardoo.eventmanager.dto.UserNotificationDto;
+import jokardoo.eventmanager.mapper.modelToDto.NotificationModelToDtoMapper;
 import jokardoo.eventmanager.mapper.modelToDto.UserNotificationModelToDtoMapper;
+import jokardoo.eventmanager.service.NotificationService;
 import jokardoo.eventmanager.service.UserNotificationService;
 import jokardoo.eventmanager.service.utils.AuthenticationParser;
 import lombok.RequiredArgsConstructor;
@@ -22,21 +26,21 @@ public class NotificationController {
 
     private final UserNotificationService userNotificationService;
 
-    private final UserNotificationModelToDtoMapper userNotificationModelToDtoMapper;
+    private final NotificationModelToDtoMapper notificationModelToDtoMapper;
+
+    private final NotificationService notificationService;
 
 
     @GetMapping()
-    public ResponseEntity<List<UserNotificationDto>> getAllUnreadNotifications() {
-
-        List<UserNotification> userNotificationList = userNotificationService
-                .getUnreadUserNotifications(
-                        authenticationParser
-                                .getCurrentUserId()
-                );
+    public ResponseEntity<List<NotificationDto>> getAllUnreadNotifications() {
 
 
-        return ResponseEntity.status(200).body(userNotificationModelToDtoMapper
-                .toDto(userNotificationList));
+        List<Notification> notificationList = notificationService
+                .getUnreadNotificationsByUserId(authenticationParser.getCurrentUserId());
+
+        List<NotificationDto> notificationDtoList = notificationModelToDtoMapper.toDto(notificationList);
+
+        return ResponseEntity.status(200).body(notificationDtoList);
     }
 
     @PostMapping

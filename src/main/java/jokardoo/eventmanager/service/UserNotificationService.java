@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -32,21 +33,23 @@ public class UserNotificationService {
         );
     }
 
-    public List<UserNotification> getUnreadUserNotifications(Long id) {
-        logger.info("INFO: try to get unread user notifications by user id.");
-        return userNotificationModelEntityMapper.toModel(userNotificationRepository.findUnreadNotificationsByUserId(id));
-    }
+
 
     public void readUserNotificationsByNotificationIds(List<Long> notificationIdList) {
-        notificationIdList.stream().forEach(notificationId -> {
-            UserNotification userNotification = userNotificationModelEntityMapper
-                    .toModel(userNotificationRepository
-                            .findUnreadNotificationsByNotificationIdAndUserId(
-                                    notificationId, authenticationParser.getCurrentUserId()
-                            ));
-            userNotification.setIsRead(true);
-            userNotificationRepository
-                    .save(userNotificationModelEntityMapper.toEntity(userNotification));
-        });
+
+        List<UserNotification> userNotifications = userNotificationModelEntityMapper
+                .toModel(userNotificationRepository
+                        .findByUserIdAndIsRead(authenticationParser.getCurrentUserId(), false));
+
+        List<UserNotification> filteredUserNotifications = new ArrayList<>();
+
+        for (UserNotification un : userNotifications) {
+            if (notificationIdList.contains(un.getUserNotificationPrimaryKey().getNotificationId())) {
+                un.setIsRead(true);
+                filteredUserNotifications.add(un);
+            }
+        }
+
+        userNotificationRepository.saveAll(userNotificationModelEntityMapper.toEntity(filteredUserNotifications));
     }
 }

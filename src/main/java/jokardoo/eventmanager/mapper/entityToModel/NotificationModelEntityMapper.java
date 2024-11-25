@@ -2,13 +2,18 @@ package jokardoo.eventmanager.mapper.entityToModel;
 
 import jokardoo.eventmanager.domain.notification.Notification;
 import jokardoo.eventmanager.domain.notification.NotificationEntity;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class NotificationModelEntityMapper implements ModelEntityMapper<Notification, NotificationEntity>{
+
+    private final ChangeFieldsMapper changeFieldsMapper;
+
     @Override
     public Notification toModel(NotificationEntity entity) {
         return new Notification(
@@ -16,19 +21,18 @@ public class NotificationModelEntityMapper implements ModelEntityMapper<Notifica
                 entity.getEventId(),
                 entity.getUpdatedByUserId(),
                 entity.getEventOwnerId(),
-                entity.getStringOfChanges()
+                changeFieldsMapper.toModel(entity.getChangeFieldsEntity())
         );
     }
 
     @Override
     public NotificationEntity toEntity(Notification model) {
-        return new NotificationEntity(
-                model.getId(),
+        return new NotificationEntity(model.getId(),
                 model.getEventId(),
                 model.getUpdatedByUserId(),
                 model.getEventOwnerId(),
-                model.getStringOfChanges()
-        );
+                changeFieldsMapper.toEntity(model.getChangeFields()),
+                model.getNotificationCreatedTime());
     }
 
     @Override

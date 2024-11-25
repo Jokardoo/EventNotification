@@ -18,10 +18,10 @@ public interface UserNotificationRepository extends JpaRepository<UserNotificati
     List<UserNotificationEntity> findUnreadNotificationsByUserId(@Param("id") Long userId);
 
     @Query(value = """
-            SELECT DISTINCT * FROM notification n 
-            JOIN user_notification_entity une on n.id = une.notification_id 
-            WHERE une.is_read = false AND une.notification_id = :id AND une.user_id = :userId
+            SELECT * FROM user_notification_entity
+            WHERE user_id = :userId 
+            AND is_read = :isRead
             """, nativeQuery = true)
-    UserNotificationEntity findUnreadNotificationsByNotificationIdAndUserId(@Param("id") Long notificationId,
-                                                                            @Param("userId") Long userId);
+    List<UserNotificationEntity> findByUserIdAndIsRead(@Param("userId") Long userId, @Param("isRead") Boolean isRead);
+
 }

@@ -1,6 +1,7 @@
 package jokardoo.eventmanager.domain.notification;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -8,6 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Table(name = "notification")
+@AllArgsConstructor
 public class NotificationEntity {
 
     @Id
@@ -20,23 +22,14 @@ public class NotificationEntity {
 
     private Long eventOwnerId;
 
-    private String stringOfChanges;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "change_fields_id", referencedColumnName = "id")
+    private ChangeFieldsEntity changeFieldsEntity;
 
     private LocalDateTime notificationCreatedTime;
 
     public NotificationEntity() {
     }
 
-    public NotificationEntity(Long id,
-                              Long eventId,
-                              Long updatedByUserId,
-                              Long eventOwnerId,
-                              String stringOfChanges) {
-        this.id = id;
-        this.eventId = eventId;
-        this.updatedByUserId = updatedByUserId;
-        this.eventOwnerId = eventOwnerId;
-        this.stringOfChanges = stringOfChanges;
-        this.notificationCreatedTime = LocalDateTime.now();
-    }
+
 }

@@ -16,16 +16,16 @@ public class Notification {
 
     private Long eventOwnerId;
 
-    private String stringOfChanges;
+    private ChangeFields changeFields;
 
     private LocalDateTime notificationCreatedTime;
 
-    public Notification(Long id, Long eventId, Long updatedByUserId, Long eventOwnerId, String stringOfChanges) {
+    public Notification(Long id, Long eventId, Long updatedByUserId, Long eventOwnerId, ChangeFields changeFields) {
         this.id = id;
         this.eventId = eventId;
         this.updatedByUserId = updatedByUserId;
         this.eventOwnerId = eventOwnerId;
-        this.stringOfChanges = stringOfChanges;
+        this.changeFields = changeFields;
         this.notificationCreatedTime = LocalDateTime.now();
     }
 

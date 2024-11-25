@@ -1,35 +1,23 @@
 package jokardoo.eventmanager.dto;
 
+import jakarta.persistence.Transient;
+import jokardoo.eventmanager.domain.notification.ChangeFields;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 
 @Data
+@NoArgsConstructor
 public class NotificationDto {
-    private Long id;
-
     private Long eventId;
 
-    private Long updatedByUserId;
+    private ChangeFields changeFields;
 
-    private Long eventOwnerId;
+    public NotificationDto(
+            Long eventId,
+            ChangeFields changeFields) {
 
-    private String stringOfChanges;
-
-
-    private LocalDateTime notificationCreatedTime;
-
-    public NotificationDto(Long id,
-                           Long eventId,
-                           Long updatedByUserId,
-                           Long eventOwnerId,
-                           String stringOfChanges,
-                           LocalDateTime notificationCreatedTime) {
-        this.id = id;
         this.eventId = eventId;
-        this.updatedByUserId = updatedByUserId;
-        this.eventOwnerId = eventOwnerId;
-        this.stringOfChanges = stringOfChanges;
-        this.notificationCreatedTime = notificationCreatedTime;
+        this.changeFields = changeFields;
     }
 }

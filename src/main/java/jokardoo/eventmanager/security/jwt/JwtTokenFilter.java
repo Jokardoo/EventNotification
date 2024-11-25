@@ -1,5 +1,6 @@
 package jokardoo.eventmanager.security.jwt;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.FilterChain;
@@ -8,11 +9,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jokardoo.eventmanager.domain.user.Role;
 import jokardoo.eventmanager.domain.user.User;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -50,6 +49,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         String jwtToken = authHeader.substring(7);
 
         String loginFromToken;
+        Claims claims;
 
         try {
             SignatureAlgorithm sa = SignatureAlgorithm.HS256;
@@ -64,20 +64,23 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         }
 
         try {
-            loginFromToken = jwtTokenManager.getLoginFromToken(jwtToken);
+            claims = jwtTokenManager.getClaims(jwtToken);
+            loginFromToken = jwtTokenManager.getLoginFromClaims(claims);
+
+
         } catch (Exception e) {
             logger.error("Error while reading jwt", e);
             filterChain.doFilter(request, response);
             return;
         }
 
-        User user = new User(loginFromToken, Role.valueOf(jwtTokenManager.getRoleFromToken(jwtToken)));
-        user.setId(jwtTokenManager.getUserIdFromToken(jwtToken));
+        User user = new User(loginFromToken, Role.valueOf(jwtTokenManager.getRoleFromClaims(claims)));
+        user.setId(jwtTokenManager.getUserIdFromClaims(claims));
 
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                 user,
                 null,
-                List.of(new SimpleGrantedAuthority(jwtTokenManager.getRoleFromToken(jwtToken)))
+                List.of(new SimpleGrantedAuthority(jwtTokenManager.getRoleFromClaims(claims)))
         );
 
         SecurityContextHolder.getContext().setAuthentication(token);

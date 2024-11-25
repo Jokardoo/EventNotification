@@ -1,6 +1,5 @@
 package jokardoo.eventmanager.scheduler;
 
-import jokardoo.eventmanager.domain.notification.Notification;
 import jokardoo.eventmanager.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -12,7 +11,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @EnableScheduling
 @Configuration
@@ -23,21 +21,19 @@ public class NotificationScheduler {
 
     @Value("${app.notification-expiration-date}")
     private Long expirationDateInHours;
+
     private final NotificationService notificationService;
 
-    @Scheduled(cron = "0 0/10 * * * *")
+    @Scheduled(cron = "0/5 * * * * *")
     public void deleteExpiredNotifications() {
         logger.info("INFO: Deleting old records");
 
-        List<Notification> expiredNotifications =
-                notificationService
-                        .getAllByNotificationCreatedTimeBefore(
-                                LocalDateTime
-                                        .now()
-                                        .minusHours(expirationDateInHours)
-                        );
+        notificationService.deleteAllNotificationsWhereCreatedTimeBefore(
+                LocalDateTime
+                .now()
+                .minusHours(expirationDateInHours)
+        );
 
-        expiredNotifications.forEach(notificationService::deleteNotification);
     }
 
 }

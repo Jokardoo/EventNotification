@@ -17,6 +17,14 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
 
     List<NotificationEntity> findAllByNotificationCreatedTimeBefore(LocalDateTime dateTime);
 
+    @Query(value = """
+            SELECT * from notification n 
+            JOIN user_notification_entity une on n.id = une.notification_id 
+            WHERE une.is_read = false 
+            AND une.user_id = :userId
+                        """, nativeQuery = true)
+    List<NotificationEntity> findUnreadNotificationsByUserId(@Param("userId") Long userId);
 
+    void deleteAllByNotificationCreatedTimeBefore(LocalDateTime dateTime);
 
 }

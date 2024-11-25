@@ -30,8 +30,6 @@ public class EventKafkaListener {
     public void listenEvents(ConsumerRecord<Long, EventChangeNotification> record) {
         EventChangeNotification eventChanges = record.value();
 
-        //TODO
-
         Notification notification = notificationParser.parseNotification(eventChanges);
 
         if (notificationParser.isNotificationHaveActualDataToSave(notification)) {
@@ -40,7 +38,6 @@ public class EventKafkaListener {
             notifyUsersAboutEventChanges(eventChanges, curNotification);
         }
 
-        //handle event
         logger.info("Get change event: event{}", record.value());
     }
 

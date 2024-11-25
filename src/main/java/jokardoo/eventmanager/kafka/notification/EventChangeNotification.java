@@ -1,8 +1,10 @@
 package jokardoo.eventmanager.kafka.notification;
 
+import jokardoo.eventmanager.domain.event.EventStatus;
 import jokardoo.eventmanager.kafka.fieldsToChange.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -17,21 +19,21 @@ public class EventChangeNotification {
     private boolean isEventNew;
 
 
-    private FieldChangeString name;
+    private FieldChange<String> name;
 
-    private FieldChangeInteger maxPlaces;
+    private FieldChange<Integer> maxPlaces;
 
-    private FieldChangeInteger occupiedPlaces;
+    private FieldChange<Integer> occupiedPlaces;
 
-    private FieldChangeDateTime date;
+    private FieldChange<LocalDateTime> date;
 
-    private FieldChangeInteger cost;
+    private FieldChange<Integer> cost;
 
-    private FieldChangeInteger duration;
+    private FieldChange<Integer> duration;
 
-    private FieldChangeLong locationId;
+    private FieldChange<Long> locationId;
 
-    private FieldChangeEventStatus status;
+    private FieldChange<EventStatus> status;
 
 
     private List<Long> subscribersIdList;
