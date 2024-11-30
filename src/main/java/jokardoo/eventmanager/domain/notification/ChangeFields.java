@@ -1,52 +1,33 @@
 package jokardoo.eventmanager.domain.notification;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jokardoo.eventmanager.domain.event.EventStatus;
-import jokardoo.eventmanager.kafka.fieldsToChange.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 public class ChangeFields {
 
     @JsonIgnore
-    private Long Id;
+    private Long id;
 
+    @JsonIgnore
+    private Long notificationId;
 
-    private FieldChange<String> name;
+    private String fieldName;
 
-    private FieldChange<Integer> maxPlaces;
+    private String oldValue;
 
-    private FieldChange<Integer> occupiedPlaces;
+    private String newValue;
 
-    private FieldChange<LocalDateTime> date;
+    @JsonIgnore
+    private Notification notification;
 
-    private FieldChange<Integer> cost;
-
-    private FieldChange<Integer> duration;
-
-    private FieldChange<Long> locationId;
-
-    private FieldChange<EventStatus> status;
-
-    public ChangeFields(FieldChange<String> name,
-                        FieldChange<Integer> maxPlaces,
-                        FieldChange<Integer> occupiedPlaces,
-                        FieldChange<LocalDateTime> date,
-                        FieldChange<Integer> cost,
-                        FieldChange<Integer> duration,
-                        FieldChange<Long> locationId,
-                        FieldChange<EventStatus> status) {
-        this.name = name;
-        this.maxPlaces = maxPlaces;
-        this.occupiedPlaces = occupiedPlaces;
-        this.date = date;
-        this.cost = cost;
-        this.duration = duration;
-        this.locationId = locationId;
-        this.status = status;
+    public ChangeFields(String fieldName, String oldValue, String newValue) {
+        this.fieldName = fieldName;
+        this.oldValue = oldValue;
+        this.newValue = newValue;
     }
+
 }

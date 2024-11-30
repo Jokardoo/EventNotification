@@ -1,9 +1,10 @@
 package jokardoo.eventmanager.dto;
 
-import jakarta.persistence.Transient;
 import jokardoo.eventmanager.domain.notification.ChangeFields;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 
 @Data
@@ -11,13 +12,8 @@ import lombok.NoArgsConstructor;
 public class NotificationDto {
     private Long eventId;
 
-    private ChangeFields changeFields;
+    private List<ChangeFields> changeFields;
 
-    public NotificationDto(
-            Long eventId,
-            ChangeFields changeFields) {
 
-        this.eventId = eventId;
-        this.changeFields = changeFields;
-    }
+
 }

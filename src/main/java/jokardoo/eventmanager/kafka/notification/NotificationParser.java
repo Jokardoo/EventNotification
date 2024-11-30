@@ -5,22 +5,61 @@ import jokardoo.eventmanager.domain.notification.Notification;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class NotificationParser {
 
-    public ChangeFields parseChangeFields(EventChangeNotification changes) {
-        ChangeFields changeFields = new ChangeFields();
+    public List<ChangeFields> parseAndReturnChangeFields(EventChangeNotification changes) {
+        List<ChangeFields> changeFields = new ArrayList<>();
 
-        changeFields.setName(changes.getName());
-        changeFields.setMaxPlaces(changes.getMaxPlaces());
-        changeFields.setOccupiedPlaces(changes.getOccupiedPlaces());
+        if (changes.getName().hasActualData()) {
+            changeFields.add(new ChangeFields("name",
+                    changes.getName().getOldValue(),
+                    changes.getName().getNewValue()));
+        }
+        if (changes.getMaxPlaces().hasActualData()) {
+            changeFields.add(new ChangeFields("max_places",
+                    changes.getMaxPlaces().getOldValue().toString(),
+                    changes.getMaxPlaces().getNewValue().toString()));
+        }
 
-        changeFields.setDate(changes.getDate());
-        changeFields.setCost(changes.getCost());
-        changeFields.setDuration(changes.getDuration());
-        changeFields.setLocationId(changes.getLocationId());
-        changeFields.setStatus(changes.getStatus());
+        if (changes.getOccupiedPlaces().hasActualData()) {
+            changeFields.add(new ChangeFields("occupied_places",
+                    changes.getOccupiedPlaces().getOldValue().toString(),
+                    changes.getOccupiedPlaces().getNewValue().toString()));
+        }
+
+        if (changes.getDate().hasActualData()) {
+            changeFields.add(new ChangeFields("date",
+                    changes.getDate().getOldValue().toString(),
+                    changes.getDate().getNewValue().toString()));
+        }
+
+        if (changes.getCost().hasActualData()) {
+            changeFields.add(new ChangeFields("cost",
+                    changes.getCost().getOldValue().toString(),
+                    changes.getCost().getNewValue().toString()));
+        }
+
+        if (changes.getDuration().hasActualData()) {
+            changeFields.add(new ChangeFields("duration",
+                    changes.getDuration().getOldValue().toString(),
+                    changes.getDuration().getNewValue().toString()));
+        }
+
+        if (changes.getLocationId().hasActualData()) {
+            changeFields.add(new ChangeFields("LocationId",
+                    changes.getLocationId().getOldValue().toString(),
+                    changes.getLocationId().getNewValue().toString()));
+        }
+
+        if (changes.getStatus().hasActualData()) {
+            changeFields.add(new ChangeFields("status",
+                    changes.getStatus().getOldValue().toString(),
+                    changes.getStatus().getNewValue().toString()));
+        }
 
         return changeFields;
     }
@@ -33,26 +72,19 @@ public class NotificationParser {
         notification.setUpdatedByUserId(eventChanges.getUserId());
         notification.setNotificationCreatedTime(LocalDateTime.now());
 
-        notification.setChangeFields(parseChangeFields(eventChanges));
-
-        notification.setNotificationCreatedTime(LocalDateTime.now());
-
+        notification.setChangeFields(parseAndReturnChangeFields(eventChanges));
 
         return notification;
     }
 
     public boolean isNotificationHaveActualDataToSave(Notification notification) {
-        ChangeFields changeFields = notification.getChangeFields();
+        List<ChangeFields> changeFields = notification.getChangeFields();
 
-        if (changeFields.getName().hasActualData()
-                || changeFields.getMaxPlaces().hasActualData()
-                || changeFields.getOccupiedPlaces().hasActualData()
-                || changeFields.getDate().hasActualData()
-                || changeFields.getCost().hasActualData()
-                || changeFields.getDuration().hasActualData()
-                || changeFields.getLocationId().hasActualData()
-                || changeFields.getStatus().hasActualData()) {
-            return true;
+        for (ChangeFields cf : changeFields) {
+            if (!cf.getNewValue()
+                    .equals(cf.getOldValue())) {
+                return true;
+            }
         }
         return false;
     }

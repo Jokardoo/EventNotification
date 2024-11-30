@@ -3,7 +3,6 @@ package jokardoo.eventmanager.domain.notification;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -14,47 +13,15 @@ public class ChangeFieldsEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy = "changeFieldsEntity", cascade = CascadeType.ALL)
-    private NotificationEntity notification;
 
-    private String oldName;
+    private String fieldName;
 
-    private Integer oldMaxPlaces;
+    private String oldValue;
 
-    private Integer oldOccupiedPlaces;
+    private String newValue;
 
-    private LocalDateTime oldDate;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "notification_id", referencedColumnName = "id")
+    private NotificationEntity notificationEntity;
 
-    private Integer oldCost;
-
-    private Integer oldDuration;
-
-    private Long oldLocationId;
-
-    private String oldStatus;
-
-
-
-
-    private String newName;
-
-    private Integer newMaxPlaces;
-
-    private Integer newOccupiedPlaces;
-
-    private LocalDateTime newDate;
-
-    private Integer newCost;
-
-    private Integer newDuration;
-
-    private Long newLocationId;
-
-    private String newStatus;
-
-
-
-    public ChangeFieldsEntity() {
-
-    }
 }

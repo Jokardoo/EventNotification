@@ -8,18 +8,14 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<NotificationEntity, Long> {
 
-    Optional<NotificationEntity> findById(Long id);
-
-    List<NotificationEntity> findAllByNotificationCreatedTimeBefore(LocalDateTime dateTime);
 
     @Query(value = """
             SELECT * from notification n 
-            JOIN user_notification_entity une on n.id = une.notification_id 
+            LEFT JOIN user_notification_entity une on n.id = une.notification_id 
             WHERE une.is_read = false 
             AND une.user_id = :userId
                         """, nativeQuery = true)

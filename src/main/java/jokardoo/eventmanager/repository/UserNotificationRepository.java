@@ -10,12 +10,6 @@ import java.util.List;
 
 @Repository
 public interface UserNotificationRepository extends JpaRepository<UserNotificationEntity, Long> {
-    @Query(value = """
-            SELECT DISTINCT * FROM notification n 
-            JOIN user_notification_entity une on n.id = une.notification_id 
-            WHERE une.is_read = false AND une.user_id = :id
-            """, nativeQuery = true)
-    List<UserNotificationEntity> findUnreadNotificationsByUserId(@Param("id") Long userId);
 
     @Query(value = """
             SELECT * FROM user_notification_entity
